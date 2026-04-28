@@ -1,0 +1,73 @@
+/* ========================================
+   MediTrack - Responsive Styles
+   ======================================== */
+
+/* Tablet and larger */
+@media (min-width: 640px) {
+  .container {
+    padding: 32px 24px;
+  }
+
+  .fab {
+    bottom: 32px;
+  }
+
+  .modal {
+    border-radius: 24px;
+    max-width: 480px;
+    margin: auto;
+    align-self: center;
+  }
+
+  .modal-overlay {
+    align-items: center;
+    padding: 20px;
+  }
+
+  .landing-hero h1 {
+    font-size: 2.4rem;
+  }
+
+  .dash-greeting {
+    font-size: 1.9rem;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .container {
+    padding: 40px 24px;
+  }
+
+  .topbar {
+    padding: 0 32px;
+  }
+}
+
+/* Small phones */
+@media (max-width: 380px) {
+  .container {
+    padding: 20px 16px;
+  }
+
+  .auth-card {
+    padding: 24px 20px;
+  }
+
+  .med-card {
+    padding: 14px 12px;
+  }
+
+  .med-icon {
+    width: 42px;
+    height: 42px;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="MediTrack — Simple medication tracking and reminders." />
+  <title>MediTrack — Track Your Medications</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="assets/css/theme.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/responsive.css" />
+  <style>
+    .error-msg {
+      display: none;
+      background: #FEE2E2;
+      color: #DC2626;
+      font-size: 0.875rem;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+    .landing-footer {
+      margin-top: 28px;
+      text-align: center;
+      font-size: 0.825rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body data-page="landing">
+
+<div class="landing-page">
+  <div class="landing-hero">
+    <div class="landing-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/>
+        <line x1="8.5" y1="8.5" x2="15.5" y2="15.5"/>
+      </svg>
+    </div>
+    <h1>MediTrack</h1>
+    <p>Your personal medication companion. Never miss a dose again.</p>
+  </div>
+
+  <div class="auth-card">
+    <!-- Tabs -->
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-tab="signup-form">Sign Up</button>
+      <button class="auth-tab" data-tab="login-form">Sign In</button>
+    </div>
+
+    <!-- Sign Up Form -->
+    <div id="signup-form" class="auth-form">
+      <div id="signup-error" class="error-msg"></div>
+
+      <div class="form-group">
+        <label class="form-label" for="signup-name">Full Name</label>
+        <input class="form-input" id="signup-name" type="text" placeholder="Maria Santos" autocomplete="name" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="signup-email">Email Address</label>
+        <input class="form-input" id="signup-email" type="email" placeholder="you@example.com" autocomplete="email" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="signup-password">Password</label>
+        <input class="form-input" id="signup-password" type="password" placeholder="Min. 6 characters" autocomplete="new-password" />
+      </div>
+
+      <button class="btn btn-primary mt-16" id="signup-btn" type="button" onclick="Auth.handleSignup()">
+        Create Account
+      </button>
+    </div>
+
+    <!-- Login Form -->
+    <div id="login-form" class="auth-form" style="display:none">
+      <div id="login-error" class="error-msg"></div>
+
+      <div class="form-group">
+        <label class="form-label" for="login-email">Email Address</label>
+        <input class="form-input" id="login-email" type="email" placeholder="you@example.com" autocomplete="email" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="login-password">Password</label>
+        <input class="form-input" id="login-password" type="password" placeholder="Your password" autocomplete="current-password" />
+      </div>
+
+      <button class="btn btn-primary mt-16" id="login-btn" type="button" onclick="Auth.handleLogin()">
+        Sign In
+      </button>
+    </div>
+  </div>
+
+  <div class="landing-footer">
+    <p>🔒 Your data stays on your device. No accounts shared.</p>
+    <div style="margin-top:10px;">
+      <label style="cursor:pointer;display:inline-flex;align-items:center;gap:8px;color:var(--text-secondary)">
+        <label class="toggle" style="display:inline-block">
+          <input type="checkbox" data-theme-toggle onchange="ThemeManager.toggle()" />
+          <span class="toggle-slider"></span>
+        </label>
+        Dark mode
+      </label>
+    </div>
+  </div>
+</div>
+
+<script src="data/mock-db.js"></script>
+<script src="assets/js/theme-toggle.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/app.js"></script>
+</body>
+</html>

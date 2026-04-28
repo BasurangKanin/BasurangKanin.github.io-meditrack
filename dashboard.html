@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="MediTrack Dashboard — Today's Medications" />
+  <title>MediTrack — Dashboard</title>
+  <link rel="stylesheet" href="assets/css/theme.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <link rel="stylesheet" href="assets/css/responsive.css" />
+  <style>
+    .container { padding-bottom: 32px !important; }
+  </style>
+</head>
+<body data-page="dashboard">
+
+<!-- ===== TOP BAR ===== -->
+<header class="topbar">
+  <a href="dashboard.html" class="topbar-brand">
+    <div class="topbar-logo-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/>
+        <line x1="8.5" y1="8.5" x2="15.5" y2="15.5"/>
+      </svg>
+    </div>
+    <div>
+      <div class="topbar-brand-name">MediTrack</div>
+      <div class="topbar-brand-tagline">Medication Manager</div>
+    </div>
+  </a>
+
+  <div class="topbar-actions">
+    <button class="icon-btn" id="btn-theme" title="Toggle dark mode" aria-label="Toggle dark mode" onclick="ThemeManager.toggle()">
+      <!-- icon injected by ThemeManager -->
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.5 6.5 0 0 0 9.8 9.8Z"/>
+      </svg>
+    </button>
+
+    <button class="icon-btn" id="btn-schedule" title="Schedule Overview" aria-label="Schedule Overview">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+        <line x1="16" y1="2" x2="16" y2="6"/>
+        <line x1="8"  y1="2" x2="8"  y2="6"/>
+        <line x1="3"  y1="10" x2="21" y2="10"/>
+      </svg>
+    </button>
+
+    <button class="icon-btn" id="btn-settings" title="Settings" aria-label="Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<!-- ===== NOTIFICATION BANNER ===== -->
+<div class="notif-banner" id="notif-banner"></div>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main class="main-content">
+  <div class="container pb-fab">
+
+    <div class="dash-header">
+      <div class="dash-date" id="dash-date"></div>
+      <div class="dash-greeting" id="dash-greeting"></div>
+      <div class="dash-profile-row">
+        <div class="profile-switcher">
+          <div class="profile-avatar" id="profile-avatar" style="background:#2D6A4F">M</div>
+          <select class="profile-select" id="profile-select" aria-label="Switch profile"></select>
+        </div>
+      </div>
+    </div>
+
+    <div class="progress-section" id="progress-section" style="display:none">
+      <div class="progress-label">
+        <span>Today's Progress</span>
+        <span id="progress-text">0 of 0 taken</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <div class="section-title">Today's Medications</div>
+      <div class="med-count-badge" id="med-count">0 today</div>
+    </div>
+
+    <div class="med-list" id="med-list"></div>
+
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<!-- Persistent Add Medication button (always available) -->
+<button class="fab" id="fab-add-med" type="button" onclick="Dashboard.openAddModal()">
+  <span style="display:inline-flex;align-items:center;gap:10px">
+    <span aria-hidden="true" style="display:inline-flex;align-items:center">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+    </span>
+    Add Medication
+  </span>
+</button>
+
+
+<!-- ============================================================
+     MODALS
+     ============================================================ -->
+
+<!-- Add / Edit Medication -->
+<div class="modal-overlay" id="med-modal-overlay" onclick="if(event.target===this)Dashboard.closeModal('med-modal')">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">Add Medication</div>
+      <button class="modal-close" onclick="Dashboard.closeModal('med-modal')" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6"  y2="18"/>
+          <line x1="6"  y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="med-name">Medication Name *</label>
+      <input class="form-input" id="med-name" type="text" placeholder="e.g. Metformin" autocomplete="off" />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="med-dosage">Dosage *</label>
+      <input class="form-input" id="med-dosage" type="text" placeholder="e.g. 500mg" />
+    </div>
+
+    <!-- id is med-form-select (not med-form) to avoid conflict with JS form reset -->
+    <div class="form-group">
+      <label class="form-label" for="med-form-select">Form</label>
+      <select class="form-select" id="med-form-select">
+        <option value="tablet">💊 Tablet</option>
+        <option value="capsule">💊 Capsule</option>
+        <option value="liquid">🧪 Liquid / Syrup</option>
+        <option value="injection">💉 Injection</option>
+        <option value="patch">🩹 Patch</option>
+        <option value="drops">💧 Drops</option>
+        <option value="inhaler">💨 Inhaler</option>
+        <option value="other">📦 Other</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="med-frequency">Frequency</label>
+      <select class="form-select" id="med-frequency">
+        <option value="daily">Daily</option>
+        <option value="weekly">Weekly</option>
+        <option value="as_needed">As Needed</option>
+      </select>
+    </div>
+
+    <div class="form-group" id="weekly-day-group" style="display:none">
+      <label class="form-label" for="med-weekly-day">Weekly Day</label>
+      <select class="form-select" id="med-weekly-day">
+        <option value="0">Sunday</option>
+        <option value="1">Monday</option>
+        <option value="2">Tuesday</option>
+        <option value="3">Wednesday</option>
+        <option value="4">Thursday</option>
+        <option value="5">Friday</option>
+        <option value="6">Saturday</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="med-instructions">Instructions</label>
+      <textarea class="form-textarea" id="med-instructions" placeholder="e.g. Take with food" rows="2"></textarea>
+    </div>
+
+    <div>
+      <div class="times-label">Reminder Times</div>
+      <div class="times-grid" id="times-grid"></div>
+      <div class="add-time-row">
+        <input class="form-input" type="time" id="time-input" />
+        <button class="btn btn-secondary" id="btn-add-time" type="button">+ Add</button>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="Dashboard.closeModal('med-modal')">Cancel</button>
+      <button class="btn btn-primary" id="btn-save-med">Save</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- Schedule Overview -->
+<div class="modal-overlay" id="schedule-modal-overlay" onclick="if(event.target===this)Dashboard.closeModal('schedule-modal')">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="schedule-modal-title">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title" id="schedule-modal-title">Schedule Overview</div>
+      <button class="modal-close" onclick="Dashboard.closeModal('schedule-modal')" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6"  y2="18"/>
+          <line x1="6"  y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div id="schedule-content"></div>
+  </div>
+</div>
+
+
+<!-- Settings -->
+<div class="modal-overlay" id="settings-modal-overlay" onclick="if(event.target===this)Dashboard.closeModal('settings-modal')">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="settings-modal-title">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title" id="settings-modal-title">Settings</div>
+      <button class="modal-close" onclick="Dashboard.closeModal('settings-modal')" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6"  y2="18"/>
+          <line x1="6"  y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">Subscription</div>
+      <div id="subscription-card"></div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">Profiles</div>
+      <div id="settings-profiles"></div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">Appearance</div>
+      <div class="settings-item">
+        <div>
+          <div class="settings-item-label">Dark Mode</div>
+          <div class="settings-item-sub">Switch between light and dark themes</div>
+        </div>
+        <label class="toggle">
+          <input type="checkbox" data-theme-toggle onchange="ThemeManager.toggle()" />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">Notifications</div>
+      <div class="settings-item">
+        <div>
+          <div class="settings-item-label">Enable Reminders</div>
+          <div class="settings-item-sub">Allow browser notifications for doses</div>
+        </div>
+        <button class="btn btn-sm btn-secondary"
+          onclick="Notifications.requestPermission().then(ok=>Dashboard.showToast(ok?'Notifications enabled!':'Permission denied'))">
+          Enable
+        </button>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">Account</div>
+      <div class="settings-item">
+        <div>
+          <div class="settings-item-label">Sign Out</div>
+          <div class="settings-item-sub">You'll be returned to the login screen</div>
+        </div>
+        <button class="btn btn-sm btn-danger"
+                onclick="DB.logout(); window.location.href='index.html'">
+          Sign Out
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Upgrade / Payment -->
+<div class="modal-overlay" id="upgrade-modal-overlay" onclick="if(event.target===this)Dashboard.closeModal('upgrade-modal')">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="upgrade-modal-title">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title" id="upgrade-modal-title">Upgrade to Premium</div>
+      <button class="modal-close" onclick="Dashboard.closeModal('upgrade-modal')" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6"  y2="18"/>
+          <line x1="6"  y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="payment-header">
+      <div style="font-size:2.5rem;margin-bottom:8px">⭐</div>
+      <div class="payment-price">$2<span>/month</span></div>
+      <p style="color:var(--text-secondary);font-size:0.9rem;margin-top:6px">Unlock unlimited additional profiles</p>
+    </div>
+
+    <ul class="payment-features">
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Unlimited additional profiles</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Unlimited medications per profile</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Priority notification delivery</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>Cancel anytime</li>
+    </ul>
+
+    <div class="form-group">
+      <label class="form-label">Card Number</label>
+      <input class="form-input" type="text" placeholder="4242 4242 4242 4242" maxlength="19"
+        oninput="this.value=this.value.replace(/[^\d]/g,'').replace(/(.{4})/g,'$1 ').trim()" />
+    </div>
+
+    <div class="card-input-row">
+      <div class="form-group mb-0">
+        <label class="form-label">Expiry</label>
+        <input class="form-input" type="text" placeholder="MM/YY" maxlength="5"
+          oninput="this.value=this.value.replace(/[^\d\/]/g,'').replace(/^(\d{2})(\d)/,'$1/$2')" />
+      </div>
+      <div class="form-group mb-0">
+        <label class="form-label">CVV</label>
+        <input class="form-input" type="text" placeholder="123" maxlength="4"
+          oninput="this.value=this.value.replace(/\D/g,'')" />
+      </div>
+    </div>
+
+    <p style="font-size:0.8rem;color:var(--text-muted);text-align:center;margin:14px 0 0;">
+      🔒 Demo only — no real charge will be made
+    </p>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="Dashboard.closeModal('upgrade-modal')">Cancel</button>
+      <button class="btn btn-primary" id="pay-btn" onclick="Dashboard.processPayment()">
+        ⭐ Subscribe — $2/mo
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ===== SCRIPTS ===== -->
+<script src="data/mock-db.js"></script>
+<script src="assets/js/theme-toggle.js"></script>
+<script src="assets/js/notifications.js"></script>
+<script src="assets/js/dashboard.js"></script>
+<script src="assets/js/app.js"></script>
+
+</body>
+</html>
